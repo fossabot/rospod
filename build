@@ -11,4 +11,6 @@ docker build\
   --build-arg home=$HOME\
   --build-arg workspace=$HOME\
   --build-arg shell=$SHELL\
-  -t $IMAGE_NAME $DIRNAME
+  -t $IMAGE_NAME $DIRNAME \
+  $@
+
