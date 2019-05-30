@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-IMAGE_NAME=ros-melodic
-CONTAINER_NAME=`docker ps --filter status=running --filter ancestor=$IMAGE_NAME --format "{{.Names}}"`
+IMAGE_NAME=bitbots-melodic
+CONTAINER_NAME=`podman ps --filter status=running --filter ancestor=$IMAGE_NAME --format "{{.Names}}"`
 
 if [[ -z $CONTAINER_NAME ]]; then
     echo "Container not running, starting it"
@@ -10,11 +10,11 @@ if [[ -z $CONTAINER_NAME ]]; then
     bash -c "$DIR/start"
 fi
 
-CONTAINER_NAME=`docker ps --filter status=running --filter ancestor=$IMAGE_NAME --format "{{.Names}}"`
+CONTAINER_NAME=`podman ps --filter status=running --filter ancestor=$IMAGE_NAME --format "{{.Names}}"`
 
 if [[ -z $@ ]]; then
-	docker exec -it $CONTAINER_NAME $SHELL
+	podman exec -it $CONTAINER_NAME $SHELL
 else
-	docker exec -t $CONTAINER_NAME "$@"
+	podman exec -t $CONTAINER_NAME "$@"
 fi
 

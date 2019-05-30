@@ -1,16 +1,15 @@
 #!/usr/bin/env bash
 
-IMAGE_NAME=ros-melodic
-DIRNAME=`dirname $0`
+IMAGE_NAME=bitbots-melodic
 
 # Build the docker image
-docker build\
-  --network=host\
-  --build-arg user=$USER\
-  --build-arg uid=$UID\
-  --build-arg home=$HOME\
-  --build-arg workspace=$HOME\
-  --build-arg shell=$SHELL\
-  -t $IMAGE_NAME $DIRNAME \
-  $@
+buildah build-using-dockerfile \
+	--network=host \
+	--build-arg user=$USER \
+	--build-arg home=$HOME \
+	--build-arg workspace=$HOME \
+	--build-arg shell=$SHELL \
+	-t $IMAGE_NAME \
+	$@ \
+	$(dirname $0)
 

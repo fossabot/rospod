@@ -2,7 +2,6 @@ FROM osrf/ros:melodic-desktop-full
 
 # Arguments
 ARG user
-ARG uid
 ARG home
 ARG workspace
 ARG shell
@@ -28,13 +27,12 @@ RUN apt-get autoremove -y; apt-get clean -y
 RUN pip install tensorflow
 
 # Mount the user's home directory
-VOLUME "${home}"
+#VOLUME "${home}"
 
 # Clone user into docker image and set up X11 sharing 
-RUN \
-  echo "${user}:x:${uid}:${uid}:${user},,,:${home}:${shell}" >> /etc/passwd && \
-  echo "${user}:x:${uid}:" >> /etc/group && \
-  echo "${user} ALL=(ALL) NOPASSWD: ALL" > "/etc/sudoers.d/${user}" && \
+RUN cat /etc/passwd | sed "s#root:x:0:0::/root:/bin/bash#${user}:x:0:0:${user},,,:${home}:${shell}#" > /etc/passwd
+RUN cat /etc/group | sed "s#root:x:0:root#${user}:x:0:#" > /etc/group
+RUN echo "${user} ALL=(ALL) NOPASSWD: ALL" > "/etc/sudoers.d/${user}" && \
   chmod 0440 "/etc/sudoers.d/${user}"
 
 # Switch to user
@@ -44,3 +42,4 @@ ENV QT_X11_NO_MITSHM=1
 ENV CATKIN_TOPLEVEL_WS="${workspace}/devel"
 # Switch to the workspace
 WORKDIR ${workspace}
+
