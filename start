@@ -5,7 +5,6 @@ VIDEO_DEVICE=/dev/video0
 # Get the group number of the video group, docker groups may differ
 VIDEO_GROUP=`stat -c "%g" $VIDEO_DEVICE`
 UUCP_GROUP=`cat /etc/group | grep uucp | cut -d : -f 3`
-DOCKER_GROUP=`cat /etc/group | grep docker | cut -d : -f 3`
 
 # Test whether a running container exists
 CONTAINER_NAME=`docker ps --filter status=running --filter ancestor=$IMAGE_NAME --format "{{.Names}}"`
@@ -33,10 +32,8 @@ else
 	  -v "/opt/pycharm-professional:/opt/pycharm-professional:ro"\
 	  -v "/opt/clion:/opt/clion:ro"\
 	  --device=$VIDEO_DEVICE:/dev/video0 \
-	  -v "/var/run/docker.sock:/var/run/docker.sock:rw" \
 	  --group-add=$VIDEO_GROUP \
 	  --group-add=$UUCP_GROUP \
-	  --group-add=$DOCKER_GROUP \
 	  --name "rosdocked_melodic" \
 	  -it $IMAGE_NAME > /dev/null  # Do not print container id
 fi
