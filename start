@@ -9,7 +9,7 @@ UUCP_GROUP=`cat /etc/group | grep uucp | cut -d : -f 3`
 CONTAINER_NAME=`podman ps --filter status=running --filter ancestor=$IMAGE_NAME --format "{{.Names}}"`
 if [[ -n $CONTAINER_NAME ]]; then
     echo "Container already running, connect with ./connect or stop it with ./stop"
-    exit 1
+	exit
 fi
 
 # Test whether a stopped container exists
@@ -17,24 +17,25 @@ CONTAINER_NAME=`podman ps -a --filter status=exited --filter ancestor=$IMAGE_NAM
 if [[ -n $CONTAINER_NAME ]]; then
 	echo "Resuming stopped container"
 	podman start $CONTAINER_NAME > /dev/null
+
 else
-	# Run the container with shared X11
+	echo "Starting new container as $NEW_CONTAINER_NAME"
 	podman run \
-	  -d \
+	  --tty \
+	  --detach \
 	  --privileged \
-	  --user 0:0 \
-	  --net=host \
+	  --userns=host \
+	  --net="host" \
 	  --add-host=$HOSTNAME:127.0.1.1 \
 	  -e SHELL \
 	  -e DISPLAY \
 	  -e DOCKER=1 \
-	  -v "/tmp/.X11-unix:/tmp/.X11-unix:rw" \
-	  -v "/opt/pycharm-professional:/opt/pycharm-professional:ro" \
-	  -v "/opt/clion:/opt/clion:ro" \
 	  --mount type=bind,src=$HOME,target=$HOME \
-	  --group-add=$UUCP_GROUP \
-	  --name "rosdocked_melodic" \
+	  --mount type=bind,src=/tmp/.X11-unix,target=/tmp/.X11-unix \
+	  --mount type=bind,src=$XDG_RUNTIME_DIR,target=$XDG_RUNTIME_DIR \
+	  --mount type=bind,src=/opt/pycharm-professional,target=/opt/pycharm-professional,ro \
+	  --mount type=bind,src=/opt/clion,target=/opt/clion,ro \
 	  $@ \
-	  -it $IMAGE_NAME
+	  $IMAGE_NAME
 fi
 

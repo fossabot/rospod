@@ -2,6 +2,8 @@ FROM osrf/ros:melodic-desktop-full
 
 # Arguments
 ARG user
+ARG uid
+ARG gid
 ARG home
 ARG workspace
 ARG shell
@@ -24,10 +26,14 @@ RUN pip install tensorflow
 #VOLUME "${home}"
 
 # Clone user into docker image and set up X11 sharing 
-RUN cat /etc/passwd- | sed "s#root:.*#${user}:x:0:0:${user},,,:${home}:${shell}#" > /etc/passwd
-RUN cat /etc/group- | sed "s#root:.*#${user}:x:0:#" > /etc/group
-RUN echo "0 ALL=(ALL) NOPASSWD: ALL" > "/etc/sudoers.d/${user}" && \
-  chmod 0440 "/etc/sudoers.d/${user}"
+RUN cp /etc/passwd /etc/passwd- && \
+	cat /etc/passwd- | sed "s#root:.*#${user}:x:0:0:${user},,,:${home}:${shell}#" > /etc/passwd
+RUN cp /etc/group /etc/group- && \
+	cat /etc/group- | sed "s#root:.*#${user}:x:0:#" > /etc/group
+#RUN echo "${user}:x:${uid}:${gid}::${home}:${shell}" >> /etc/passwd && \
+#	echo "${user}:x:${gid}:" >> /etc/group
+RUN echo "${user} ALL=(ALL) NOPASSWD: ALL" > "/etc/sudoers.d/${user}" && \
+ 	chmod 0440 "/etc/sudoers.d/${user}"
 
 # Switch to user
 USER "${user}"
