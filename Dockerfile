@@ -32,7 +32,7 @@ RUN pip install tensorflow
 # Clone user into docker image and set up X11 sharing 
 RUN cat /etc/passwd | sed "s#root:x:0:0::/root:/bin/bash#${user}:x:0:0:${user},,,:${home}:${shell}#" > /etc/passwd
 RUN cat /etc/group- | sed "s#root:x:0:root#${user}:x:0:#" > /etc/group
-RUN echo "${user} ALL=(ALL) NOPASSWD: ALL" > "/etc/sudoers.d/${user}" && \
+RUN echo "0 ALL=(ALL) NOPASSWD: ALL" > "/etc/sudoers.d/${user}" && \
   chmod 0440 "/etc/sudoers.d/${user}"
 
 # Switch to user
