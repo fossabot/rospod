@@ -13,7 +13,7 @@ if [[ -n $CONTAINER_NAME ]]; then
 fi
 
 # Test whether a stopped container exists
-CONTAINER_NAME=`podman ps --filter status=exited --filter ancestor=$IMAGE_NAME --format "{{.Names}}"`
+CONTAINER_NAME=`podman ps -a --filter status=exited --filter ancestor=$IMAGE_NAME --format "{{.Names}}"`
 if [[ -n $CONTAINER_NAME ]]; then
 	echo "Resuming stopped container"
 	podman start $CONTAINER_NAME > /dev/null

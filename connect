@@ -13,8 +13,8 @@ fi
 CONTAINER_NAME=`podman ps --filter status=running --filter ancestor=$IMAGE_NAME --format "{{.Names}}"`
 
 if [[ -z $@ ]]; then
-	podman exec -it $CONTAINER_NAME $SHELL
+	podman exec --privileged --user 0:0 -it $CONTAINER_NAME $SHELL
 else
-	podman exec -t $CONTAINER_NAME "$@"
+	podman exec --privileged --user 0:0 -t $CONTAINER_NAME "$@"
 fi
 
