@@ -2,9 +2,6 @@
 
 IMAGE_NAME=bitbots-melodic
 NEW_CONTAINER_NAME=rospod-melodic
-VIDEO_DEVICE=/dev/video0
-# Get the group number of the video group, docker groups may differ
-UUCP_GROUP=`cat /etc/group | grep uucp | cut -d : -f 3`
 
 # Test whether a running container exists
 RUNNING_CONTAINER_NAME=`podman ps --filter status=running --filter ancestor=$IMAGE_NAME --format "{{.Names}}"`
@@ -41,7 +38,7 @@ else
 	  --add-host=$HOSTNAME:127.0.1.1 \
 	  -e SHELL \
 	  -e DISPLAY \
-	  -e DOCKER=1 \
+	  -e CONTAINER=1 \
 	  --mount type=bind,src=$HOME,target=$HOME \
 	  --mount type=bind,src=/tmp/.X11-unix,target=/tmp/.X11-unix \
 	  --mount type=bind,src=$XDG_RUNTIME_DIR,target=$XDG_RUNTIME_DIR \
