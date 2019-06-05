@@ -1,22 +1,33 @@
 #!/usr/bin/env bash
 
 IMAGE_NAME=bitbots-melodic
+NEW_CONTAINER_NAME=rospod-melodic
 VIDEO_DEVICE=/dev/video0
 # Get the group number of the video group, docker groups may differ
 UUCP_GROUP=`cat /etc/group | grep uucp | cut -d : -f 3`
 
 # Test whether a running container exists
-CONTAINER_NAME=`podman ps --filter status=running --filter ancestor=$IMAGE_NAME --format "{{.Names}}"`
-if [[ -n $CONTAINER_NAME ]]; then
+RUNNING_CONTAINER_NAME=`podman ps --filter status=running --filter ancestor=$IMAGE_NAME --format "{{.Names}}"`
+if [[ -n $RUNNING_CONTAINER_NAME ]]; then
     echo "Container already running, connect with ./connect or stop it with ./stop"
 	exit
 fi
 
 # Test whether a stopped container exists
-CONTAINER_NAME=`podman ps -a --filter status=exited --filter ancestor=$IMAGE_NAME --format "{{.Names}}"`
-if [[ -n $CONTAINER_NAME ]]; then
-	echo "Resuming stopped container"
-	podman start $CONTAINER_NAME > /dev/null
+EXITED_CONTAINER_NAME=`podman ps -a --filter status=exited --filter ancestor=$IMAGE_NAME --format "{{.Names}}"`
+CREATED_CONTAINER_NAME=`podman ps -a --filter status=created --filter ancestor=$IMAGE_NAME --format "{{.Names}}"`
+PAUSED_CONTAINER_NAME=`podman ps -a --filter status=created --filter ancestor=$IMAGE_NAME --format "{{.Names}}"`
+if [[ -n $EXITED_CONTAINER_NAME ]]; then
+	echo "Resuming exited container"
+	podman start $EXITED_CONTAINER_NAME >/dev/null
+
+elif [[ -n $CREATED_CONTAINER_NAME ]]; then
+	echo "Starting created container"
+	podman start $CREATED_CONTAINER_NAME >/dev/null
+
+elif [[ -n $PAUSED_CONTAINER_NAME ]]; then
+	echo "Unpausing paused container"
+	podman unpause $PAUSED_CONTAINER_NAME
 
 else
 	echo "Starting new container as $NEW_CONTAINER_NAME"
@@ -36,6 +47,7 @@ else
 	  --mount type=bind,src=$XDG_RUNTIME_DIR,target=$XDG_RUNTIME_DIR \
 	  --mount type=bind,src=/opt/pycharm-professional,target=/opt/pycharm-professional,ro \
 	  --mount type=bind,src=/opt/clion,target=/opt/clion,ro \
+	  --name $NEW_CONTAINER_NAME \
 	  $@ \
 	  $IMAGE_NAME
 fi
