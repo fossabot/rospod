@@ -2,7 +2,7 @@
 
 IMAGE_NAME=bitbots-melodic
 
-# Build the docker image
+# Build the oci image
 buildah build-using-dockerfile \
 	--network=host \
 	--build-arg user=$USER \
