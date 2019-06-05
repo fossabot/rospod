@@ -46,6 +46,6 @@ else
 	  --mount type=bind,src=/opt/clion,target=/opt/clion,ro \
 	  --name $NEW_CONTAINER_NAME \
 	  $@ \
-	  $IMAGE_NAME
+	  $IMAGE_NAME >/dev/null
 fi
 

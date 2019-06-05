@@ -6,5 +6,6 @@ CONTAINER_NAME=`podman ps -a --filter status=running --filter ancestor=$IMAGE_NA
 if [[ -z $CONTAINER_NAME ]]; then
     echo "The container is not running"
 else
+	echo "Stopping container"
     podman stop $CONTAINER_NAME > /dev/null  # Do not print container name
 fi
