@@ -25,6 +25,7 @@ else
 	  --detach \
 	  --privileged \
 	  --userns=host \
+	  --cap-add='CAP_NET_BROADCAST' --cap-add='CAP_NET_RAW' \
 	  --net="host" \
 	  --add-host=$HOSTNAME:127.0.1.1 \
 	  -e SHELL \
