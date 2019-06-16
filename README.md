@@ -1,4 +1,6 @@
 ## rospod
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fftsell%2Frospod.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fftsell%2Frospod?ref=badge_shield)
+
 
 📦 ❤️ 🤖
 
@@ -51,3 +53,7 @@ fi
 ```
 
 in your `.bashrc` or `.zshrc`.
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fftsell%2Frospod.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fftsell%2Frospod?ref=badge_large)
